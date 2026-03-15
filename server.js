@@ -1,15 +1,18 @@
 const express = require('express');
 const cors = require('cors');
-const { Pool } = require('pg'); // Drive do Postgres (Supabase)
+const { Client } = require('pg'); // Drive do Postgres (Supabase)
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-const db = new Pool({
+const db = new Client({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+    ssl: {
+        rejectUnauthorized: false // <-- ISSO É O QUE MATA ESSE ERRO DA IMAGEM!
+    }
 });
+
 
 db.connect()
     .then(() => console.log("✅ Conectado ao Supabase com sucesso!"))
