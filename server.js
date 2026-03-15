@@ -9,7 +9,8 @@ app.use(cors());
 // Conexão com a DATABASE_URL do Render (Cofre)
 const db = new Client({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false } // Necessário para segurança do Supabase
+    ssl: true
+    //ssl: { rejectUnauthorized: false } // Necessário para segurança do Supabase
 });
 
 db.connect()
