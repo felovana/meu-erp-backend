@@ -66,13 +66,26 @@ db.connect()
     .then(() => console.log("Conectado ao Supabase (Postgres)!"))
     .catch(err => console.error("Erro de conexão:", err));
 
-// Listar (Read) - Ajustado: result.rows e aspas na tabela
+/* // Listar (Read) - Ajustado: result.rows e aspas na tabela
 app.get('/products', (req, res) => {
     db.query('SELECT * FROM "products"', (err, result) => {
         if (err) return res.status(500).send(err);
         res.send(result.rows); // O Angular precisa do .rows
     });
+}); */
+
+// Listar (Read) - Versão moderna com Async/Await
+app.get('/products', async (req, res) => {
+    try {
+      // O Postgres é rigoroso: use aspas duplas se a tabela começar com Maiúscula
+      const result = await db.query('SELECT * FROM "products"'); 
+      res.json(result.rows); // No Postgres, os dados SEMPRE estão em .rows
+    } catch (err) {
+      console.error("Erro na consulta:", err);
+      res.status(500).send("Erro ao buscar dados no banco");
+    }
 });
+
 
 // Cadastrar (POST) - Ajustado: $1, $2 e aspas nas colunas
 app.post('/products', (req, res) => {
