@@ -1,16 +1,14 @@
 const express = require('express');
 const cors = require('cors');
-const { Client } = require('pg'); // Drive do Postgres (Supabase)
+const { Pool } = require('pg'); // Drive do Postgres (Supabase)
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-const db = new Client({
+const db = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false // <-- ISSO resolve o erro do certificado na hora!
-    }
+    ssl: { rejectUnauthorized: false }
 });
 
 db.connect()
