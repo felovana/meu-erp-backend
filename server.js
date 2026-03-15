@@ -1,22 +1,25 @@
+// FORÇA BRUTA: Ignora o erro de certificado SSL (Self-signed) no Node.js
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 const express = require('express');
 const cors = require('cors');
-const { Client } = require('pg'); // Drive do Postgres (Supabase)
+const { Client } = require('pg'); // Driver do Postgres (Supabase)
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Conexão com a DATABASE_URL do Render (Cofre) usando SSL flexível
 const db = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: {
-        rejectUnauthorized: false // <-- ISSO É O QUE MATA ESSE ERRO DA IMAGEM!
+        rejectUnauthorized: false
     }
 });
 
-
 db.connect()
-    .then(() => console.log("✅ Conectado ao Supabase com sucesso!"))
-    .catch(err => console.error("❌ Erro de conexão:", err));
+    .then(() => console.log("✅ CONECTADO AO SUPABASE COM SUCESSO!"))
+    .catch(err => console.error("❌ ERRO DE CONEXÃO NO BANCO:", err));
 
 // 1. LISTAR (Read)
 app.get('/products', async (req, res) => {
@@ -36,7 +39,7 @@ app.post('/products', async (req, res) => {
     try {
         const sql = 'INSERT INTO products ("Name", "Price") VALUES ($1, $2) RETURNING *';
         const result = await db.query(sql, [Name, Price]);
-        res.status(201).json(result.rows[0]);
+        res.status(201).json(result.rows[0]); // Retorna o item criado
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -67,6 +70,6 @@ app.delete('/products/:id', async (req, res) => {
     }
 });
 
-// Porta dinâmica para o Render
+// Porta dinâmica para o Render (Ele usa a 10000 internamente)
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
