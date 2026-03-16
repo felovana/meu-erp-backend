@@ -14,12 +14,14 @@
     "license": "ISC",
     "type": "commonjs",
     "dependencies": {
+        "bcryptjs": "^3.0.3",
         "cors": "^2.8.6",
         "express": "^5.2.1",
         "mysql2": "^3.19.1",
         "pg": "^8.20.0"
     },
     "devDependencies": {
+        "@types/bcryptjs": "^2.4.6",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.6",
         "@types/node": "^25.5.0",

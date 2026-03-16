@@ -38,7 +38,11 @@ app.get('/:tabela', async (req: Request, res: Response) => {
 // 2. SALVAR/CADASTRAR (Insert Genérico)
 app.post('/:tabela', async (req: Request, res: Response) => {
     const { tabela } = req.params;
-    const dados = req.body; // Recebe o objeto/array do Angular
+    let dados = req.body; // Recebe o objeto/array do Angular
+
+    if (!dados.Id){
+        delete dados.Id;
+    }
     
     const colunas = Object.keys(dados).map(key => `"${key}"`).join(', ');
     const valores = Object.values(dados);
@@ -50,6 +54,7 @@ app.post('/:tabela', async (req: Request, res: Response) => {
         const result = await db.query(sql, valores);
         res.status(201).json(result.rows[0]);
     } catch (err: any) {
+        console.error(err);
         res.status(500).send(`Erro ao salvar em ${tabela}: ` + err.message);
     }
 });
